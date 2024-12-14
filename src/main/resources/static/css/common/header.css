@@ -1,0 +1,187 @@
+/* 공통 스타일 */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #e63946;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-toggle-circle {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.4s ease, background-color 0.3s ease;
+    z-index: 2;
+}
+
+.search-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #e63946;
+    cursor: pointer;
+}
+
+.search-toggle-circle:hover {
+    background-color: #f8d7da;
+}
+
+/* 검색창 애니메이션 */
+.search-bar {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40px;
+    max-width: 0;
+    padding: 0 15px;
+    border: none;
+    border-radius: 25px 10px 10px 25px;
+    font-size: 16px;
+    transition: max-width 0.299s ease-in-out, opacity 0.3s ease-in-out;
+    background-color: white;
+    color: #333;
+    opacity: 0;
+    z-index: 1;
+    width: 960px;
+}
+
+.search-bar.open {
+    max-width: 400px;
+    opacity: 1;
+}
+
+.search-toggle-circle.open {
+    transform: translateX(400px); /* 검색창의 너비만큼 이동 */
+}
+
+.search-icon {
+    font-size: 20px;
+    color: #e63946;
+    transition: transform 0.4s ease;
+}
+
+.search-bar.open ~ .search-toggle-circle .search-icon {
+    transform: translateX(-360px); /* 돋보기가 검색창 내부로 이동 */
+}
+
+.search-bar:focus {
+    outline: none;
+}
+
+.logout-button {
+    background-color: white;
+    color: #e63946;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.logout-button:hover {
+    background-color: #d90429;
+    color: white;
+}
+
+/* 드롭다운 메뉴 */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    color: #e63946;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 150px;
+    list-style: none;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none; /* 클릭 방지 */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9999;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dropdown-menu li {
+    padding: 8px 15px;
+}
+
+.dropdown-menu li:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-menu a {
+    text-decoration: none;
+    color: #e63946;
+}
+
+
+
+
+
+
+
+/* 드롭다운 스타일 */
+.search-dropdown {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    width: 418px;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    color: black;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
