@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Web Study</title>
+    <div th:include="fragments/css.html :: css"></div>
 </head>
 <body>
+    <!-- 헤더 -->
+    <header class="header">
 
+
+
+    </header>
+
+    <!-- 메인 배너 -->
+    <section class="banner">
+        <div class="banner-content">
+            <h2>기술 블로그, 시작은 했는데 뭘 써야 할지 모르겠다면?</h2>
+            <p>개발자 글쓰기 모임 '로켓' 운영진<br>기술스쿨이 알려주는 블로그 운영 노하우!</p>
+        </div>
+        <img src="blog-banner.png" alt="Banner Image">
+    </section>
+
+    <!-- 카테고리 섹션 -->
+    <section class="categories">
+        <h3>배우고 싶은 과정을 입력해보세요</h3>
+        <input type="text" class="study-search">
+        <div class="category-list">
+            <div class="category-item item1">부트캠프</div>
+            <div class="category-item item2">신규강의</div>
+            <div class="category-item item3">코딩테스트</div>
+            <div class="category-item item4">스프링</div>
+            <div class="category-item item5">데이터</div>
+            <div class="category-item item6">모바일</div>
+            <div class="category-item item7">AI</div>
+        </div>
+    </section>
+
+    <!-- 추천 강의 -->
+    <section class="courses">
+        <h3>내가 좋아할 만한 다른 강의</h3>
+        <div class="course-list">
+            <div class="course-card">
+                <img src="python-course.png" alt="Python Course">
+                <h4>Python</h4>
+                <p>파이썬 입문 (Inflearn Original)</p>
+                <span>₩33,000</span>
+            </div>
+            <div class="course-card">
+                <img src="ml-course.png" alt="Machine Learning Course">
+                <h4>Machine Learning</h4>
+                <p>파이썬 머신러닝 완벽 가이드</p>
+                <span>₩89,000</span>
+            </div>
+            <div class="course-card">
+                <img src="sql-course.png" alt="SQL Course">
+                <h4>SQL</h4>
+                <p>데이터 분석을 위한 SQL</p>
+                <span>₩16,500</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <p>&copy; 2024 Inflearn Clone. All Rights Reserved.</p>
+    </footer>
 </body>
 </html>

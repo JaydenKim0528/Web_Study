@@ -1,0 +1,151 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.header .logo h1 {
+    color: #17a2b8;
+    font-size: 1.5rem;
+}
+
+.navbar a {
+    margin: 0 1rem;
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+}
+
+.search-bar {
+    display: flex;
+}
+
+.search-bar input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 0.5rem;
+    border: none;
+    background-color: #17a2b8;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Banner */
+.banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    background-color: #f0f8ff;
+}
+
+.banner-content h2 {
+    font-size: 2rem;
+    color: #333;
+}
+
+.banner-content p {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Categories */
+.categories {
+    padding: 2rem;
+    text-align: center;
+    background-color: #fff;
+}
+
+.category-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.category-item {
+    padding: 0.5rem 1rem;
+    background-color: #17a2b8;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Courses */
+.courses {
+    padding: 2rem;
+    background-color: #f9f9f9;
+}
+
+.course-list {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.course-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.course-card img {
+    max-width: 100%;
+    border-radius: 4px;
+}
+
+.course-card h4 {
+    margin: 1rem 0 0.5rem;
+    color: #17a2b8;
+}
+
+.course-card p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.course-card span {
+    display: block;
+    margin-top: 0.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #17a2b8;
+    color: #fff;
+}
