@@ -1,0 +1,80 @@
+.header {
+    display: flex;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.header-left-link {
+    display: flex;
+    width: 35%;
+    align-items: center;
+}
+
+.header-logo {
+    margin: 0 20px;
+    width: 30%;
+}
+
+.header-main-link {
+    text-decoration: none;
+    color: green;
+    font-weight: bold;
+}
+
+.header-navbar {
+    display: flex;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+    width: 70%;
+    justify-content: space-evenly;
+}
+
+.header-link {
+    text-decoration: none;
+    color: black;
+}
+
+.header-link:hover {
+    color: rgb(0, 182, 0);
+}
+
+.header-search-bar {
+    display: flex;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    width: 60%;
+    align-items: center;
+}
+
+.header-search-study {
+    margin-right: 10px;
+    padding: 0 10px;
+    width: 85%;
+    height: 30px;
+    border: solid 2px lightgray;
+    border-radius: 5px;
+}
+
+.header-search-study::placeholder {
+    font-weight: bold;
+    color: lightgray;
+}
+
+.header-login-button {
+    height: 35px;
+    width: 15%;
+    background-color: rgb(68, 170, 68);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+}
+
+.header-login-button:hover {
+    background-color: rgb(25, 211, 25);
+}
+
+.header-login-button:active {
+    background-color: rgb(3, 70, 3);
+}
