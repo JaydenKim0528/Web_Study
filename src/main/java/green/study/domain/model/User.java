@@ -4,7 +4,6 @@ import green.study.domain.entity.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.swing.text.html.parser.Entity;
 
 @Getter
 @Builder
@@ -13,6 +12,7 @@ public class User {
     private Long userNo;
     private String userId;
     private String password;
+    private String confirmPassword;
     private String userName;
     private String role;
 

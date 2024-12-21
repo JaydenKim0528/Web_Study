@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -24,8 +26,14 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public UserLoginRes userLogin(UserLoginReq userLoginReq) {
+    public UserLoginRes userLogin(@RequestBody @Valid UserLoginReq userLoginReq) {
         return service.userLogin(userLoginReq.toLogin());
+    }
+
+    @GetMapping("/checkUserId")
+    public Map<String, Boolean> checkUserId(@RequestParam("userId") String userId) {
+        boolean isAvailable = service.isUserIdAvailable(userId);
+        return Map.of("available", isAvailable);
     }
 
 }

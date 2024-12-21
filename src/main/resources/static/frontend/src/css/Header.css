@@ -47,6 +47,10 @@
     align-items: center;
 }
 
+.header-search-bar input:focus {
+    outline: none;
+}
+
 .header-search-study {
     margin-right: 10px;
     padding: 0 10px;
@@ -77,4 +81,11 @@
 
 .header-login-button:active {
     background-color: rgb(3, 70, 3);
+}
+
+.dropdown-toggle {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

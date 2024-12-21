@@ -1,9 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/Header.css';
 
 const Header = () => {
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userId, setUserId] = useState('');
+
+    const updateLoginState = () => {
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            setIsLoggedIn(true);
+            setUserId(storedUserId);
+        } else {
+            setIsLoggedIn(false);
+            setUserId('');
+        }
+    };
+
+    useEffect(() => {
+        updateLoginState();
+
+        const handleLoginStateChange = () => updateLoginState();
+        window.addEventListener('loginStateChange', handleLoginStateChange);
+
+        return () => {
+            window.removeEventListener('loginStateChange', handleLoginStateChange);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        setUserId('');
+        window.dispatchEvent(new Event('loginStateChange'));
+        navigate('/');
+    };
 
     return (
         <header className="header">
@@ -24,12 +57,44 @@ const Header = () => {
                     className="header-search-study"
                     placeholder="원하는 강의를 검색해보세요"
                 />
-                <button
-                    className="header-login-button"
-                    onClick={() => navigate('/login')}
-                >
-                    로그인
-                </button>
+                {isLoggedIn ? (
+                    <div className="dropdown">
+                        <button
+                            className="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            {userId}
+                        </button>
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <button
+                                    className="dropdown-item"
+                                    onClick={() => navigate('/mypage')}
+                                >
+                                    마이페이지
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    className="dropdown-item"
+                                    onClick={handleLogout}
+                                >
+                                    로그아웃
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                ) : (
+                    <button
+                        className="header-login-button"
+                        onClick={() => navigate('/login')}
+                    >
+                        로그인
+                    </button>
+                )}
             </div>
         </header>
     );

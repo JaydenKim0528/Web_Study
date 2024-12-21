@@ -37,3 +37,7 @@ out/
 .vscode/
 
 .properties
+
+node_modules/
+
+.psb

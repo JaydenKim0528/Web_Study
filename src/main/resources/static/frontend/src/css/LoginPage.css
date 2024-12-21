@@ -30,10 +30,41 @@
 }
 
 .form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    width: 95%;
+    height: 25px;
+    border: 1px solid gray;
+}
+
+.role-type-select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.role-type-select input[type="radio"] {
+    margin-right: 5px;
+}
+
+.role-radio {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.role-item {
+    display: flex;
+    align-items: center;
+}
+
+.role-item input[type="radio"] {
+    margin-right: 5px;
+    width: 50px;
+}
+
+.role-label {
+    font-size: 16px;
+    width: 100px;
 }
 
 .form-button {
@@ -64,4 +95,17 @@
 
 .toggle-link:hover {
     text-decoration: underline;
+}
+
+.id-status {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.id-status.available {
+    color: green;
+}
+
+.id-status.unavailable {
+    color: red;
 }

@@ -31,6 +31,7 @@ public class UserRegisterReq {
         return User.builder()
                 .userId(userId)
                 .password(password)
+                .confirmPassword(confirmPassword)
                 .userName(userName)
                 .role(role)
                 .build();
