@@ -7,6 +7,7 @@ import green.study.infrastructure.util.JwtUtil;
 import green.study.presentation.dto.UserLoginRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class ApplicationService {
 
     public final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /*
     *   회원가입
@@ -24,8 +26,16 @@ public class ApplicationService {
         if(!user.getPassword().equals(user.getConfirmPassword())) {
             throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다");
         }
-        UserEntity saved = userRepository.save(user.toEntity());
-        return User.from(saved);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+
+        User updateUser = user.toBuilder()
+                .password(encodedPassword)
+                .build();
+
+        UserEntity userEntity = updateUser.toEntity();
+        UserEntity savedEntity = userRepository.save(userEntity);
+
+        return User.from(savedEntity);
     }
 
     /*
@@ -43,8 +53,8 @@ public class ApplicationService {
 
         log.info("데이터베이스에서 조회된 사용자: {}", foundUser);
 
-        if (!foundUser.getPassword().equals(user.getPassword())) {
-            log.warn("비밀번호 불일치: 입력된 비밀번호={}, 저장된 비밀번호={}", user.getPassword(), foundUser.getPassword());
+        if (!passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
+            log.warn("비밀번호 불일치: 입력된 비밀번호={}", user.getPassword());
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 

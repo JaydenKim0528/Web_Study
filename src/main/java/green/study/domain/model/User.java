@@ -6,7 +6,7 @@ import lombok.Getter;
 
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class User {
 
     private Long userNo;

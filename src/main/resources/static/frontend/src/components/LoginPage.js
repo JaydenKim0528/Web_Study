@@ -5,8 +5,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/LoginPage.css';
 
 const LoginPage = () => {
+    // 페이지 이동
     const navigate = useNavigate();
+
+    // 로그인/회원가입 상태 구분
     const [isLogin, setIsLogin] = useState(true);
+
+    // 사용자 입력 폼 데이터
     const [formData, setFormData] = useState({
         userId: '',
         password: '',
@@ -14,10 +19,17 @@ const LoginPage = () => {
         userName: '',
         role: 'user',
     });
+
+    // 아이디 중복 결과 상태 관리
     const [userIdAvailable, setUserIdAvailable] = useState(null);
+
+    // 아이디 중복 메세지 상태 관리
     const [userIdMessage, setUserIdMessage] = useState('');
+
+    // 알림 메세지 상태 관리
     const [alert, setAlert] = useState({ type: '', message: '', visible: false });
 
+    // 폼 데이터 초기화
     const resetFormData = () => {
         setFormData({
             userId: '',
@@ -31,10 +43,12 @@ const LoginPage = () => {
         setAlert({ type: '', message: '', visible: false });
     };
 
+    // 로그인/회원가입 변경 시 폼 데이터 초기화
     useEffect(() => {
         resetFormData();
     }, [isLogin]);
 
+    // 아이디 중복 검사 딜레이 처리
     useEffect(() => {
         if (!isLogin && formData.userId.trim() !== '') {
             const timeoutId = setTimeout(() => {
@@ -44,11 +58,13 @@ const LoginPage = () => {
         }
     }, [formData.userId, isLogin]);
 
+    // 입력 필드 변경
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    // 아이디 중복 확인
     const checkUserIdAvailability = async (userId) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/checkUserId?userId=${userId}`);
@@ -66,57 +82,65 @@ const LoginPage = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // 폼 제출 처리
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!isLogin) {
-            if (formData.password !== formData.confirmPassword) {
-                setAlert({ type: 'danger', message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.', visible: true });
-                return;
-            }
-            if (!userIdAvailable) {
-                setAlert({ type: 'danger', message: '이미 사용 중인 아이디입니다.', visible: true });
-                return;
-            }
+    // 회원가입 처리
+    if (!isLogin) {
+        if (formData.password !== formData.confirmPassword) {
+            setAlert({ type: 'danger', message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.', visible: true });
+            return;
+        }
+        if (!userIdAvailable) {
+            setAlert({ type: 'danger', message: '이미 사용 중인 아이디입니다.', visible: true });
+            return;
+        }
 
-            try {
-                await axios.post('http://localhost:8080/api/register', {
+        try {
+            await axios.post(
+                'http://localhost:8080/api/register',
+                {
                     userId: formData.userId,
                     password: formData.password,
                     confirmPassword: formData.confirmPassword,
                     userName: formData.userName,
                     role: formData.role,
-                });
-                setAlert({ type: 'success', message: '회원가입 성공! 환영합니다.', visible: true });
-                resetFormData();
-                setIsLogin(true);
-            } catch (error) {
-                console.error('회원가입 실패:', error);
-                setAlert({ type: 'danger', message: '회원가입에 실패했습니다. 다시 시도해주세요.', visible: true });
-            }
-        } else {
-            try {
-                const response = await axios.post('http://localhost:8080/api/login', {
+                },
+                { withCredentials: true }
+            );
+            setAlert({ type: 'success', message: '회원가입 성공! 환영합니다.', visible: true });
+            resetFormData();
+            setIsLogin(true);
+        } catch (error) {
+            console.error('회원가입 실패:', error);
+            setAlert({ type: 'danger', message: '회원가입에 실패했습니다. 다시 시도해주세요.', visible: true });
+        }
+    } else {
+        // 로그인 처리
+        try {
+            const response = await axios.post(
+                'http://localhost:8080/api/login',
+                {
                     userId: formData.userId,
                     password: formData.password,
                     role: formData.role,
-                });
-                const { token } = response.data;
+                },
+                { withCredentials: true } // 쿠키 전달 허용
+            );
 
-                localStorage.setItem('userId', formData.userId);
-                localStorage.setItem('token', token);
+            setAlert({ type: 'success', message: '로그인 성공! 환영합니다.', visible: true });
 
-                setAlert({ type: 'success', message: '로그인 성공! 환영합니다.', visible: true });
-                window.dispatchEvent(new Event('loginStateChange'));
+            window.dispatchEvent(new Event('loginStateChange'));
 
-                resetFormData();
-                setTimeout(() => navigate('/'), 50);
-            } catch (error) {
-                console.error('로그인 실패:', error);
-                setAlert({ type: 'danger', message: '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.', visible: true });
-            }
+            resetFormData();
+            setTimeout(() => navigate('/'), 50);
+        } catch (error) {
+            console.error('로그인 실패:', error);
+            setAlert({ type: 'danger', message: '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.', visible: true });
         }
-    };
+    }
+};
 
     return (
         <div className="login-page">

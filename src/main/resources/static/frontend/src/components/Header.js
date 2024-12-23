@@ -3,10 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../css/Header.css';
 
 const Header = () => {
+    // 페이지 이동
     const navigate = useNavigate();
+
+    // 로그인 상태 관리
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // 로그인 된 사용자ID 상태 관리
     const [userId, setUserId] = useState('');
 
+    // 로그인 상태 업데이트
     const updateLoginState = () => {
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
@@ -18,6 +24,7 @@ const Header = () => {
         }
     };
 
+    // 컴포넌트 렌더링시 동작
     useEffect(() => {
         updateLoginState();
 
@@ -29,6 +36,7 @@ const Header = () => {
         };
     }, []);
 
+    // 로그아웃 처리
     const handleLogout = () => {
         localStorage.removeItem('userId');
         localStorage.removeItem('token');
