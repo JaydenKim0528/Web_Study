@@ -1,7 +1,7 @@
 package green.study.infrastructure.repository;
 
 
-import green.study.domain.entity.UserEntity;
+import green.study.domain.member.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

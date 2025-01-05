@@ -1,45 +1,61 @@
 import React, { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/Header.css';
 
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    console.log('All Cookies:', value)
+
+    const parts = value.split(`; ${name}=`);
+    console.log('Parts for', name, ':', parts)
+
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+};
+
+
 const Header = () => {
-    // 페이지 이동
     const navigate = useNavigate();
-
-    // 로그인 상태 관리
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // 로그인 된 사용자ID 상태 관리
+    const [isLoggedIn, setIsLoggedIn] = useState(false);  
     const [userId, setUserId] = useState('');
 
-    // 로그인 상태 업데이트
     const updateLoginState = () => {
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId) {
-            setIsLoggedIn(true);
-            setUserId(storedUserId);
+        const token = getCookie('token');
+        console.log('Token:', token)
+
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                console.log('Decoded Token:', decodedToken);
+
+                // const subject = JSON.parse(decodedToken.sub);
+                // console.log('Parsed Subject:', subject);
+
+                setIsLoggedIn(true);
+                setUserId(decodedToken.userId);
+            } catch (error) {
+                console.error('토큰 해독 실패:', error);
+                setIsLoggedIn(false);
+                setUserId('');
+            }
         } else {
             setIsLoggedIn(false);
             setUserId('');
         }
     };
 
-    // 컴포넌트 렌더링시 동작
     useEffect(() => {
         updateLoginState();
-
         const handleLoginStateChange = () => updateLoginState();
         window.addEventListener('loginStateChange', handleLoginStateChange);
-
         return () => {
             window.removeEventListener('loginStateChange', handleLoginStateChange);
         };
     }, []);
 
-    // 로그아웃 처리
     const handleLogout = () => {
-        localStorage.removeItem('userId');
-        localStorage.removeItem('token');
+        document.cookie = 'token=; Path=/; Max-Age=0;';
         setIsLoggedIn(false);
         setUserId('');
         window.dispatchEvent(new Event('loginStateChange'));

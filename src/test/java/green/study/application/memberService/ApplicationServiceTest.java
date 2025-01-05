@@ -1,6 +1,7 @@
-package green.study.application.service;
+package green.study.application.memberService;
 
-import green.study.domain.model.User;
+import green.study.application.member.service.impl.MemberServiceImpl;
+import green.study.domain.member.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ApplicationServiceTest {
 
     @Autowired
-    ApplicationService service;
+    MemberServiceImpl service;
 
     @Test
     void userCreate() {
@@ -22,7 +23,9 @@ class ApplicationServiceTest {
                 .role("user")
                 .build();
 
-        User user = service.userCreate(user1);
+        String confirmPassword = "qwer1234!";
+
+        User user = service.userCreate(user1, confirmPassword);
 
         assertThat(user.getUserId().equals("sample"));
     }

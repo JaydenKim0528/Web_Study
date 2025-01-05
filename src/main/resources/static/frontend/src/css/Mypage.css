@@ -1,0 +1,38 @@
+.mypage {
+    display: flex;
+    margin: 0 auto;
+    width: 75%;
+    height: 100vh;
+}
+
+.mypage-sidebar {
+    width: 200px;
+    padding: 20px;
+    border-right: 3px solid #f4f4f4;
+}
+
+.mypage-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.mypage-sidebar li {
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.mypage-sidebar li.active,
+.mypage-sidebar li:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.mypage-content {
+    flex: 1;
+    width: 80%;
+    padding: 20px;
+    background-color: #fff;
+}

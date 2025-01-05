@@ -1,4 +1,4 @@
-package green.study.presentation.dto;
+package green.study.presentation.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;

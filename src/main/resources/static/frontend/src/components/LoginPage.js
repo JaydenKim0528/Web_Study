@@ -5,13 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/LoginPage.css';
 
 const LoginPage = () => {
-    // 페이지 이동
     const navigate = useNavigate();
-
-    // 로그인/회원가입 상태 구분
     const [isLogin, setIsLogin] = useState(true);
-
-    // 사용자 입력 폼 데이터
     const [formData, setFormData] = useState({
         userId: '',
         password: '',
@@ -19,17 +14,10 @@ const LoginPage = () => {
         userName: '',
         role: 'user',
     });
-
-    // 아이디 중복 결과 상태 관리
     const [userIdAvailable, setUserIdAvailable] = useState(null);
-
-    // 아이디 중복 메세지 상태 관리
     const [userIdMessage, setUserIdMessage] = useState('');
-
-    // 알림 메세지 상태 관리
     const [alert, setAlert] = useState({ type: '', message: '', visible: false });
 
-    // 폼 데이터 초기화
     const resetFormData = () => {
         setFormData({
             userId: '',
@@ -43,12 +31,10 @@ const LoginPage = () => {
         setAlert({ type: '', message: '', visible: false });
     };
 
-    // 로그인/회원가입 변경 시 폼 데이터 초기화
     useEffect(() => {
         resetFormData();
     }, [isLogin]);
 
-    // 아이디 중복 검사 딜레이 처리
     useEffect(() => {
         if (!isLogin && formData.userId.trim() !== '') {
             const timeoutId = setTimeout(() => {
@@ -58,13 +44,11 @@ const LoginPage = () => {
         }
     }, [formData.userId, isLogin]);
 
-    // 입력 필드 변경
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // 아이디 중복 확인
     const checkUserIdAvailability = async (userId) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/checkUserId?userId=${userId}`);
@@ -82,92 +66,61 @@ const LoginPage = () => {
         }
     };
 
-    // 폼 제출 처리
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // 회원가입 처리
-    if (!isLogin) {
-        if (formData.password !== formData.confirmPassword) {
-            setAlert({ type: 'danger', message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.', visible: true });
-            return;
-        }
-        if (!userIdAvailable) {
-            setAlert({ type: 'danger', message: '이미 사용 중인 아이디입니다.', visible: true });
-            return;
-        }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
         try {
-            await axios.post(
-                'http://localhost:8080/api/register',
-                {
-                    userId: formData.userId,
-                    password: formData.password,
-                    confirmPassword: formData.confirmPassword,
-                    userName: formData.userName,
-                    role: formData.role,
-                },
+            const endpoint = isLogin ? 'login' : 'register';
+            const response = await axios.post(
+                `http://localhost:8080/api/${endpoint}`,
+                formData,
                 { withCredentials: true }
             );
-            setAlert({ type: 'success', message: '회원가입 성공! 환영합니다.', visible: true });
-            resetFormData();
-            setIsLogin(true);
-        } catch (error) {
-            console.error('회원가입 실패:', error);
-            setAlert({ type: 'danger', message: '회원가입에 실패했습니다. 다시 시도해주세요.', visible: true });
-        }
-    } else {
-        // 로그인 처리
-        try {
-            const response = await axios.post(
-                'http://localhost:8080/api/login',
-                {
-                    userId: formData.userId,
-                    password: formData.password,
-                    role: formData.role,
-                },
-                { withCredentials: true } // 쿠키 전달 허용
-            );
 
-            setAlert({ type: 'success', message: '로그인 성공! 환영합니다.', visible: true });
-
-            window.dispatchEvent(new Event('loginStateChange'));
+            if (isLogin) {
+                setAlert({ type: 'success', message: '로그인 성공!', visible: true });
+                window.dispatchEvent(new Event('loginStateChange'));
+            } else {
+                setAlert({ type: 'success', message: '회원가입 성공!', visible: true });
+                setIsLogin(true);
+            }
 
             resetFormData();
-            setTimeout(() => navigate('/'), 50);
+            setTimeout(() => navigate('/'), 1000);
         } catch (error) {
-            console.error('로그인 실패:', error);
-            setAlert({ type: 'danger', message: '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.', visible: true });
+            setAlert({
+                type: 'danger',
+                message: `실패: ${isLogin ? '로그인' : '회원가입'}에 문제가 발생했습니다.`,
+                visible: true,
+            });
+            console.error(error);
         }
-    }
-};
+    };
 
     return (
         <div className="login-page">
             <div className="login-container">
                 <h2>{isLogin ? '로그인' : '회원가입'}</h2>
                 {alert.visible && (
-                    <div className={`alert alert-${alert.type} mt-3`} role="alert">
+                    <div className={`alert alert-${alert.type}`} role="alert">
                         {alert.message}
                     </div>
                 )}
                 <form onSubmit={handleSubmit}>
+                    {/* 공통 필드 */}
                     <div className="form-group">
                         <label htmlFor="userId">아이디</label>
                         <input
                             type="text"
                             id="userId"
                             name="userId"
-                            placeholder="아이디를 입력하세요"
                             value={formData.userId}
                             onChange={handleChange}
+                            placeholder="아이디를 입력하세요"
+                            className='login-page-input-rectangle'
                             required
                         />
-                        {!isLogin && (
-                            <p className={`id-status ${userIdAvailable ? 'available' : 'unavailable'}`}>
-                                {userIdMessage}
-                            </p>
-                        )}
+                        <p>{userIdMessage && <small className="form-info">{userIdMessage}</small>}</p>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">비밀번호</label>
@@ -175,12 +128,15 @@ const handleSubmit = async (e) => {
                             type="password"
                             id="password"
                             name="password"
-                            placeholder="비밀번호를 입력하세요"
                             value={formData.password}
                             onChange={handleChange}
+                            placeholder="비밀번호를 입력하세요"
+                            className='login-page-input-rectangle'
                             required
                         />
                     </div>
+    
+                    {/* 회원가입 전용 필드 */}
                     {!isLogin && (
                         <>
                             <div className="form-group">
@@ -189,9 +145,10 @@ const handleSubmit = async (e) => {
                                     type="password"
                                     id="confirmPassword"
                                     name="confirmPassword"
-                                    placeholder="비밀번호를 다시 입력하세요"
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
+                                    placeholder="비밀번호를 다시 입력하세요"
+                                    className='login-page-input-rectangle'
                                     required
                                 />
                             </div>
@@ -201,48 +158,49 @@ const handleSubmit = async (e) => {
                                     type="text"
                                     id="userName"
                                     name="userName"
-                                    placeholder="사용자 이름을 입력하세요"
                                     value={formData.userName}
                                     onChange={handleChange}
+                                    placeholder="사용자 이름을 입력하세요"
+                                    className='login-page-input-rectangle'
                                     required
                                 />
                             </div>
+                            <div className="form-group">
+                                <label>역할 선택</label>
+                                <div className="form-group-role">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="user"
+                                            checked={formData.role === 'user'}
+                                            onChange={handleChange}
+                                            className='login-page-role-list'
+                                        />
+                                        일반
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="teach"
+                                            checked={formData.role === 'teach'}
+                                            onChange={handleChange}
+                                            className='login-page-role-list'
+                                        />
+                                        강사
+                                    </label>
+                                </div>
+                            </div>
                         </>
                     )}
+    
+                    {/* 제출 버튼 */}
                     <div className="form-group">
-                        <label>유형</label>
-                        <div className="role-type-select">
-                            <div className="role-item">
-                                <input
-                                    type="radio"
-                                    name="role"
-                                    value="user"
-                                    id="role-user"
-                                    checked={formData.role === 'user'}
-                                    onChange={handleChange}
-                                />
-                                <label htmlFor="role-user" className="role-label">
-                                    일반 사용자
-                                </label>
-                            </div>
-                            <div className="role-item">
-                                <input
-                                    type="radio"
-                                    name="role"
-                                    value="teach"
-                                    id="role-teach"
-                                    checked={formData.role === 'teach'}
-                                    onChange={handleChange}
-                                />
-                                <label htmlFor="role-teach" className="role-label">
-                                    강사
-                                </label>
-                            </div>
-                        </div>
+                        <button type="submit" className="form-button">
+                            {isLogin ? '로그인' : '회원가입'}
+                        </button>
                     </div>
-                    <button type="submit" className="form-button" disabled={!isLogin && userIdAvailable === false}>
-                        {isLogin ? '로그인' : '회원가입'}
-                    </button>
                 </form>
                 <div className="toggle-container">
                     <p>
@@ -255,6 +213,7 @@ const handleSubmit = async (e) => {
             </div>
         </div>
     );
+    
 };
 
 export default LoginPage;

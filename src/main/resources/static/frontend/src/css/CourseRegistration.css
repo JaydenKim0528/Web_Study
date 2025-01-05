@@ -1,0 +1,148 @@
+/* 전체 폼 컨테이너 */
+.course-registration {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+.course-registration h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 폼 그룹 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+.form-group input,
+.form-group select,
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* 커스텀 소분류 추가 */
+.custom-subcategory {
+    margin-top: 10px;
+}
+
+.custom-subcategory input {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px dashed #aaa;
+    background-color: #fffef8;
+}
+
+.custom-subcategory-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.custom-subcategory-list span {
+    background-color: #e6f7ff;
+    color: #007bff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* 동영상 등록 그룹 */
+.lecture-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.lecture-group input {
+    flex: 1;
+}
+
+.lecture-group button {
+    background-color: #ff4d4f;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.lecture-group button:hover {
+    background-color: #d9363e;
+}
+
+/* 강의 추가 버튼 */
+button[type="button"] {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button[type="button"]:hover {
+    background-color: #218838;
+}
+
+/* 제출 버튼 */
+button[type="submit"] {
+    width: 100%;
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .course-registration {
+        padding: 10px;
+    }
+
+    .lecture-group {
+        flex-direction: column;
+    }
+
+    .lecture-group button {
+        width: 100%;
+    }
+}

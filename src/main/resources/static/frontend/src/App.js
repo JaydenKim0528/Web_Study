@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import MainPage from './components/MainPage';
 import LoginPage from './components/LoginPage';
+import Mypage from './components/Mypage';
 // import ListPage from './components/ListPage';
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/mypage" element={<Mypage />} />
             {/* <Route path="/list" element={<ListPage />} /> */}
           </Routes>
         </div>

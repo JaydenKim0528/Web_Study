@@ -15,14 +15,20 @@ public class JwtUtil {
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 86400000;
 
-    public static String generateToken(String userId, String role) {
-        return Jwts.builder()
-                .setSubject(userId)
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key)
-                .compact();
+    public static String generateToken(Long userNo,String userId, String role) {
+
+        try {
+            return Jwts.builder()
+                    .claim("userId", userId)
+                    .claim("userNo", userNo)
+                    .claim("role", role)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .signWith(key)
+                    .compact();
+        } catch (Exception e) {
+            throw new RuntimeException("토큰을 생성하지 못하였습니다.", e);
+        }
     }
 
     public static boolean validateToken(String token) {

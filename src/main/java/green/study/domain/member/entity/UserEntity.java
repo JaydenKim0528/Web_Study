@@ -1,4 +1,4 @@
-package green.study.domain.entity;
+package green.study.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

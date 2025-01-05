@@ -1,7 +1,7 @@
 package green.study.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import green.study.presentation.dto.UserRegisterReq;
+import green.study.presentation.member.dto.UserRegisterReq;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

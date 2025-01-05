@@ -1,6 +1,6 @@
-package green.study.presentation.dto;
+package green.study.presentation.member.dto;
 
-import green.study.domain.model.User;
+import green.study.domain.member.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,6 @@ public class UserRegisterReq {
         return User.builder()
                 .userId(userId)
                 .password(password)
-                .confirmPassword(confirmPassword)
                 .userName(userName)
                 .role(role)
                 .build();

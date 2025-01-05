@@ -1,8 +1,8 @@
-package green.study.presentation.dto;
+package green.study.presentation.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import green.study.domain.model.User;
+import green.study.domain.member.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
