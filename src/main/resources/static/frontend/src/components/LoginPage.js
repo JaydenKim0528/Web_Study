@@ -8,22 +8,25 @@ import '../css/LoginPage.css';
 const LoginPage = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
+
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         userId: '',
         password: '',
         confirmPassword: '',
         userName: '',
-        role: 'user',
+        role: 'USER',
     });
-    const [userIdMessage, setUserIdMessage] = useState({ text: '', type: '' });
-    const [passwordMessage, setPasswordMessage] = useState({ text: '', type: '' });
-    const [confirmPasswordMessage, setConfirmPasswordMessage] = useState({ text: '', type: '' });
+    const [messages, setMessages] = useState({
+        userId: { text: '', type: '' },
+        password: { text: '', type: '' },
+        confirmPassword: { text: '', type: '' },
+    });
     const [alert, setAlert] = useState({ type: '', message: '', visible: false });
 
     // 유효성 검사 정규식
-    const userIdRegex = /^(?=.*[a-z])[a-z0-9]{6,20}$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/;
+    const userIdRegex = /^[a-z0-9]{6,20}$/; // 영문 소문자 + 숫자 6~20자리
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/; // 영문 + 숫자 + 특수문자 포함 8~20자리
 
     // 입력 초기화
     const resetFormData = () => {
@@ -32,11 +35,13 @@ const LoginPage = () => {
             password: '',
             confirmPassword: '',
             userName: '',
-            role: 'user',
+            role: 'USER',
         });
-        setUserIdMessage({ text: '', type: '' });
-        setPasswordMessage({ text: '', type: '' });
-        setConfirmPasswordMessage({ text: '', type: '' });
+        setMessages({
+            userId: { text: '', type: '' },
+            password: { text: '', type: '' },
+            confirmPassword: { text: '', type: '' },
+        });
         setAlert({ type: '', message: '', visible: false });
     };
 
@@ -45,66 +50,81 @@ const LoginPage = () => {
     // 아이디 중복 검사
     const checkUserIdAvailability = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/checkUserId`, {
+            const response = await axios.get('http://localhost:8080/api/checkUserId', {
                 params: { userId },
             });
-            if (response.data.available) {
-                setUserIdMessage({ text: '사용 가능한 아이디입니다.', type: 'success' });
-            } else {
-                setUserIdMessage({ text: '이미 사용 중인 아이디입니다.', type: 'error' });
-            }
+            setMessages((prev) => ({
+                ...prev,
+                userId: response.data.available
+                    ? { text: '사용 가능한 아이디입니다.', type: 'success' }
+                    : { text: '이미 사용 중인 아이디입니다.', type: 'error' },
+            }));
         } catch (error) {
-            setUserIdMessage({ text: '아이디 중복 검사 중 오류가 발생했습니다.', type: 'error' });
+            setMessages((prev) => ({
+                ...prev,
+                userId: { text: '아이디 중복 검사 중 오류가 발생했습니다.', type: 'error' },
+            }));
         }
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
 
         if (!isLogin) {
             if (name === 'userId') {
                 if (!userIdRegex.test(value)) {
-                    setUserIdMessage({ text: '아이디는 영문 소문자와 숫자로 6~20자리여야 합니다.', type: 'error' });
+                    setMessages((prev) => ({
+                        ...prev,
+                        userId: { text: '아이디는 영문 소문자와 숫자로 6~20자리여야 합니다.', type: 'error' },
+                    }));
                 } else {
                     checkUserIdAvailability(value);
                 }
             }
 
             if (name === 'password') {
-                if (!passwordRegex.test(value)) {
-                    setPasswordMessage({ text: '비밀번호는 영문, 숫자, 특수문자를 포함해 8~20자여야 합니다.', type: 'error' });
-                } else {
-                    setPasswordMessage({ text: '사용 가능한 비밀번호입니다.', type: 'success' });
-                }
+                setMessages((prev) => ({
+                    ...prev,
+                    password: passwordRegex.test(value)
+                        ? { text: '사용 가능한 비밀번호입니다.', type: 'success' }
+                        : { text: '비밀번호는 영문, 숫자, 특수문자를 포함해 8~20자여야 합니다.', type: 'error' },
+                }));
             }
 
             if (name === 'confirmPassword') {
-                if (value !== formData.password) {
-                    setConfirmPasswordMessage({ text: '비밀번호가 일치하지 않습니다.', type: 'error' });
-                } else {
-                    setConfirmPasswordMessage({ text: '비밀번호가 일치합니다.', type: 'success' });
-                }
+                setMessages((prev) => ({
+                    ...prev,
+                    confirmPassword: value === formData.password
+                        ? { text: '비밀번호가 일치합니다.', type: 'success' }
+                        : { text: '비밀번호가 일치하지 않습니다.', type: 'error' },
+                }));
             }
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const endpoint = isLogin ? 'login' : 'register';
+        const requestData = isLogin
+            ? { userId: formData.userId, password: formData.password }
+            : formData;
 
         try {
-            await axios.post(`http://localhost:8080/api/${endpoint}`, formData, { withCredentials: true });
-            setAlert({ type: 'success', message: isLogin ? '로그인 성공!' : '회원가입 성공!', visible: true });
-            login(formData.userId);
-            resetFormData();
-            setTimeout(() => navigate('/'), 1000);
-        } catch (error) {
-            setAlert({
-                type: 'danger',
-                message: `${isLogin ? '로그인' : '회원가입'}에 실패했습니다.`,
-                visible: true,
+            const response = await axios.post(`http://localhost:8080/api/${endpoint}`, requestData, {
+                withCredentials: true,
             });
+            if (isLogin) {
+                const { userId, role } = response.data;
+                login(userId, role);
+                navigate('/');
+            } else {
+                setAlert({ type: 'success', message: '회원가입 성공! 로그인하세요.', visible: true });
+                setIsLogin(true); // 회원가입 성공 후 로그인 폼으로 전환
+            }
+        } catch (error) {
+            setAlert({ type: 'danger', message: `${isLogin ? '로그인' : '회원가입'}에 실패했습니다.`, visible: true });
         }
     };
 
@@ -129,8 +149,8 @@ const LoginPage = () => {
                             placeholder="아이디를 입력하세요"
                             required
                         />
-                        {!isLogin && userIdMessage.text && (
-                            <p className={`status-message ${userIdMessage.type}`}>{userIdMessage.text}</p>
+                        {!isLogin && messages.userId.text && (
+                            <p className={`status-message ${messages.userId.type}`}>{messages.userId.text}</p>
                         )}
                     </div>
                     <div className="form-group">
@@ -144,8 +164,8 @@ const LoginPage = () => {
                             placeholder="비밀번호를 입력하세요"
                             required
                         />
-                        {!isLogin && passwordMessage.text && (
-                            <p className={`status-message ${passwordMessage.type}`}>{passwordMessage.text}</p>
+                        {!isLogin && messages.password.text && (
+                            <p className={`status-message ${messages.password.type}`}>{messages.password.text}</p>
                         )}
                     </div>
                     {!isLogin && (
@@ -161,9 +181,9 @@ const LoginPage = () => {
                                     placeholder="비밀번호를 다시 입력하세요"
                                     required
                                 />
-                                {confirmPasswordMessage.text && (
-                                    <p className={`status-message ${confirmPasswordMessage.type}`}>
-                                        {confirmPasswordMessage.text}
+                                {messages.confirmPassword.text && (
+                                    <p className={`status-message ${messages.confirmPassword.type}`}>
+                                        {messages.confirmPassword.text}
                                     </p>
                                 )}
                             </div>
@@ -178,6 +198,31 @@ const LoginPage = () => {
                                     placeholder="사용자 이름을 입력하세요"
                                     required
                                 />
+                            </div>
+                            <div className="form-group-role">
+                                <label>회원 유형</label>
+                                <div>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="USER"
+                                            checked={formData.role === 'USER'}
+                                            onChange={handleChange}
+                                        />
+                                        일반
+                                    </label>
+                                    <label style={{ marginLeft: '10px' }}>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="TEACH"
+                                            checked={formData.role === 'TEACH'}
+                                            onChange={handleChange}
+                                        />
+                                        강사
+                                    </label>
+                                </div>
                             </div>
                         </>
                     )}

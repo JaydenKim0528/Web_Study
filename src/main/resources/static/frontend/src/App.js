@@ -5,7 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import MainPage from './components/MainPage';
 import LoginPage from './components/LoginPage';
-import Mypage from './components/Mypage';
+import Mypage from './components/Mypage'
 // import ListPage from './components/ListPage';
 
 const App = () => {

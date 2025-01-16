@@ -3,11 +3,12 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => { 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState('');
+    const [role, setRole] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    // 로그인 상태 확인 및 복구
     useEffect(() => {
         const validateSession = async () => {
             try {
@@ -15,30 +16,42 @@ export const AuthProvider = ({ children }) => {
                 if (response.data.loggedIn) {
                     setIsLoggedIn(true);
                     setUserId(response.data.userId);
+                    setRole(response.data.role);
+                } else {
+                    resetAuthState();
                 }
             } catch (error) {
                 console.error('로그인 상태 확인 실패:', error);
-                setIsLoggedIn(false);
-                setUserId('');
+                resetAuthState();
+            } finally {
+                setLoading(false);
             }
         };
 
         validateSession();
     }, []);
 
-    const login = (id) => {
+    const resetAuthState = () => {
+        setIsLoggedIn(false);
+        setUserId('');
+        setRole('');
+    };
+
+    const login = (id, userRole) => {
         setIsLoggedIn(true);
         setUserId(id);
+        setRole(userRole);
     };
 
     const logout = () => {
-        setIsLoggedIn(false);
-        setUserId('');
+        resetAuthState();
         document.cookie = 'token=; Path=/; Max-Age=0;';
     };
 
+    if (loading) return <div>로딩 중...</div>;
+
     return (
-        <AuthContext.Provider value={{ isLoggedIn, userId, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, userId, role, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
