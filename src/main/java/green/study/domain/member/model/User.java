@@ -12,7 +12,6 @@ public class User {
     private Long userNo;
     private String userId;
     private String password;
-    private String confirmPassword;
     private String userName;
     private String role;
 

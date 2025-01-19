@@ -6,12 +6,13 @@ import green.study.domain.member.model.Mypage;
 import green.study.domain.member.model.User;
 import green.study.infrastructure.repository.UserRepository;
 import green.study.infrastructure.util.JwtUtil;
-import green.study.presentation.member.dto.UserLoginRes;
+import green.study.presentation.member.dto.member.UserLoginRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -56,14 +57,35 @@ public class MemberServiceImpl implements MemberService {
         }
 
         log.info("로그인 성공: userId={}", foundUser.getUserId());
-        String token = JwtUtil.generateToken(foundUser.getUserNo(), foundUser.getUserId(), foundUser.getRole());
+        String token = JwtUtil.generateToken(foundUser.getUserNo(), foundUser.getUserId(), foundUser.getUserName(), foundUser.getRole());
 
         return UserLoginRes.builder()
+                .userNo(foundUser.getUserNo())
                 .userId(foundUser.getUserId())
+                .userName(foundUser.getUserName())
                 .role(foundUser.getRole())
                 .token(token)
                 .build();
     }
+
+    @Override
+    public Map<String, Object> validateUser(String token) {
+        Map<String, Object> response = new HashMap<>();
+        if (token != null && JwtUtil.validateToken(token)) {
+            Map<String, String> userInfo = JwtUtil.getUserInfoFromToken(token);
+            response.put("loggedIn", true);
+            response.put("userId", userInfo.get("userId"));
+            response.put("userName", userInfo.get("userName"));
+            response.put("role", userInfo.get("role"));
+        } else {
+            response.put("loggedIn", false);
+            response.put("userId", "");
+            response.put("userName", "");
+            response.put("role", "");
+        }
+        return response;
+    }
+
 
     @Override
     public boolean isUserIdAvailable(String userId) {

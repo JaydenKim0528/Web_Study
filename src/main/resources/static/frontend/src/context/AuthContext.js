@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => { 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState('');
+    const [userName, setUserName] = useState('');
     const [role, setRole] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -16,7 +17,11 @@ export const AuthProvider = ({ children }) => {
                 if (response.data.loggedIn) {
                     setIsLoggedIn(true);
                     setUserId(response.data.userId);
+                    console.log("USER ID : ", response.data.userId);
+                    setUserName(response.data.userName);
+                    console.log("USER NAME : ", response.data.userName);
                     setRole(response.data.role);
+                    console.log("USER ROLE : ", response.data.role);
                 } else {
                     resetAuthState();
                 }
@@ -51,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     if (loading) return <div>로딩 중...</div>;
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, userId, role, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, userId, userName, role, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

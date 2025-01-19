@@ -115,6 +115,14 @@ button[type="button"]:hover {
     background-color: #218838;
 }
 
+.instructor-name {
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: bold;
+    cursor: not-allowed;
+    border: 1px solid #ced4da;
+}
+
 /* 제출 버튼 */
 button[type="submit"] {
     width: 100%;

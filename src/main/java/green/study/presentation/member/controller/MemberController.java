@@ -1,11 +1,10 @@
 package green.study.presentation.member.controller;
 
 import green.study.application.member.service.impl.MemberServiceImpl;
-import green.study.infrastructure.util.JwtUtil;
-import green.study.presentation.member.dto.UserLoginReq;
-import green.study.presentation.member.dto.UserLoginRes;
-import green.study.presentation.member.dto.UserMypageReq;
-import green.study.presentation.member.dto.UserRegisterReq;
+import green.study.presentation.member.dto.member.UserLoginReq;
+import green.study.presentation.member.dto.member.UserLoginRes;
+import green.study.presentation.member.dto.member.UserMypageReq;
+import green.study.presentation.member.dto.member.UserRegisterReq;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -34,21 +34,31 @@ public class MemberController {
 
     // 계정 로그인 요청
     @PostMapping("/login")
-    public ResponseEntity<String> userLogin(@RequestBody @Valid UserLoginReq userLoginReq, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> userLogin(@RequestBody @Valid UserLoginReq userLoginReq, HttpServletResponse response) {
         UserLoginRes userLoginRes = service.userLogin(userLoginReq.toLogin());
 
+        // 쿠키 설정
         Cookie tokenCookie = new Cookie("token", userLoginRes.getToken());
-        tokenCookie.setHttpOnly(false); // JavaScript 접근 가능 여부
-        tokenCookie.setSecure(true); // HTTPS에서만 접근 가능 여부
+        tokenCookie.setHttpOnly(true); // JavaScript 접근 불가
+        tokenCookie.setSecure(true); // HTTPS에서만 동작
         tokenCookie.setPath("/");
-        tokenCookie.setMaxAge(86400);
+        tokenCookie.setMaxAge(86400); // 1일
         response.addCookie(tokenCookie);
 
         log.info("쿠키 체크 : tokenCookie={}", tokenCookie);
 
-        // userId를 String 형태로 응답
-        return ResponseEntity.ok(userLoginRes.getUserId());
+        // 사용자 ID와 역할 정보를 포함한 응답 반환
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("userId", userLoginRes.getUserId());
+        responseBody.put("userName", userLoginRes.getUserName());
+        responseBody.put("role", userLoginRes.getRole());
+
+        log.info("사용자 이름 : userName={}", userLoginRes.getUserName());
+
+
+        return ResponseEntity.ok(responseBody);
     }
+
 
     // (가입시)아이디 중복 검사
     @GetMapping("/checkUserId")
@@ -65,12 +75,8 @@ public class MemberController {
                 .findFirst()
                 .orElse(null);
 
-        if (token != null && JwtUtil.validateToken(token)) {
-            String userId = JwtUtil.getUserIdFromToken(token);
-            return ResponseEntity.ok(Map.of("loggedIn", true, "userId", userId));
-        } else {
-            return ResponseEntity.ok(Map.of("loggedIn", false));
-        }
+        Map<String, Object> response = service.validateUser(token);
+        return ResponseEntity.ok(response);
     }
 
 
